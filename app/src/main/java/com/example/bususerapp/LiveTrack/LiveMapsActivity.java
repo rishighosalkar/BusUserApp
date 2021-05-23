@@ -61,7 +61,7 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
     SharedPreferences sharedPreferences;
     TextView textView;
     String username;
-    private String lon = null,lat = null;
+    private Double lon,lat;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
 
@@ -81,14 +81,43 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
         }
         Log.i("UserNameeee: ", username);
 
+
         FirebaseApp secondApp2 = FirebaseApp.getInstance("busdriverapp-258fb");
         FirebaseDatabase secondDatabase2 = FirebaseDatabase.getInstance(secondApp2);
         databaseReference1 = secondDatabase2.getReference("Location");
-        //lat = databaseReference.child(username).getKey();
+
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String latitude = snapshot.child(username).child("latitude").getValue().toString();
+                String longitude = snapshot.child(username).child("longitude").getValue().toString();
+                sharedPreferences.edit().putString("Latitude", latitude).apply();
+                sharedPreferences.edit().putString("LongitudeS", longitude).apply();
+                Log.i("Latitude isss::::", snapshot.child(username).child("longitude").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        databaseReference1.addValueEventListener(postListener);
+        //Log.i("Postsnap", postsnapshot.toString());
+
+
+        if(sharedPreferences!=null)
+        {
+            lat = Double.valueOf(sharedPreferences.getString("Latitude", null));
+        }
+        if(sharedPreferences!=null)
+        {
+            lon = Double.valueOf(sharedPreferences.getString("LongitudeS", null));
+        }
         //Log.i("Latitude", lat.toString());
 
 
-        databaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+        /*databaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
             Integer i=0;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -110,11 +139,12 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        });*/
 
+        //Log.i("LLLLL", lat);
         if(lat != null)
         {
-            Log.i("Demoo", lat);
+            Log.i("Demoo", lat.toString());
             return;
         }
         Log.i("Demo", "Dont know why null");
@@ -170,17 +200,21 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
 
                 if(dataSnapshot.getKey().equals("latitude"))
                 {
-                    lat = dataSnapshot.getValue().toString();
+                    lat = Double.valueOf(dataSnapshot.getValue().toString());
                     Log.i("Latitude", lat.toString());
                 }
                 if(dataSnapshot.getKey().equals("longitude")){
-                    lon = dataSnapshot.getValue().toString();
+                    lon = Double.valueOf(dataSnapshot.getValue().toString());
                     Log.i("longitude", lon.toString());
                 }
-                //LatLng latLng = new LatLng(lat, lon);
+                LatLng latLng = new LatLng(lat, lon);
                 //lon = dataSnapshot.ge.toString();
                 //Log.i("Latitude", lat.toString());
                 Log.i("Prev", prevChildKey);
+                Location location = null;
+                location.setLatitude(lat);
+                location.setLongitude(lon);
+                setUserLocationMarker(location);
                 //setUserLocationMarker(location);
                 //LatLng latLng = new LatLng(lat, lon);
                 //mMap.addMarker((new MarkerOptions().position(latLng).title("Current Location")));
@@ -232,7 +266,7 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
         }
     }
 
-    private void zoomToUserLocation() {
+    private void zoomToUserLocation(Location location) {
         Task<Location> locationTask = fusedLocationProviderClient.getLastLocation();
         locationTask.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
