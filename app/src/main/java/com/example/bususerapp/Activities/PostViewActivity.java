@@ -64,9 +64,9 @@ public class PostViewActivity extends AppCompatActivity implements View.OnClickL
 
     private String userId, userPostId, userPostEmail, postId, route, imageUrl;
 
-    public static final String POST_PROFILE = "com.example.lostfound.lostpostprofile",
-            POST_USER_ID = "com.example.lostfound.postuserid",
-            POST_USER_EMAIL = "com.example.lostfound.postuseremail";
+    public static final String POST_PROFILE = "com.example.bususerapp.lostpostprofile",
+            POST_USER_ID = "com.example.bususerapp.postuserid",
+            POST_USER_EMAIL = "com.example.bususerapp.postuseremail";
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 1888;

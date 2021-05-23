@@ -1,5 +1,6 @@
 package com.example.bususerapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -17,12 +18,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bususerapp.Activities.LostFoundMainActivity;
+import com.example.bususerapp.Activities.PostActivity;
+import com.example.bususerapp.Activities.ProfileActivity;
+import com.example.bususerapp.Activities.ProfileViewActivity;
+import com.example.bususerapp.Classes.Post;
+import com.example.bususerapp.Classes.User;
+import com.example.bususerapp.LiveTrack.DisplayBusActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     public static TextView textView;
     Bundle extras;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
     public static SharedPreferences sharedPreferences;
     public static String key = "1";
     boolean isLoggedIn = false;
@@ -92,20 +107,77 @@ public class MainActivity extends AppCompatActivity {
 
     public void ClickSchedule(View view)
     {
-        redirectActivity(this, ScheduleActivity.class);
-    }
-
-    public void ClickAboutUs(View view){
-        //redirectActivity(this, NavigationDrawer.class);
-    }
-
-    public void ClickLostAndFound(View view){
         if(!isLoggedIn)
         {
             Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
             return;
         }
+        redirectActivity(this, ScheduleActivity.class);
+    }
+
+    public void ClickLiveLocation(View view){
+
+        if(!isLoggedIn)
+        {
+            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        redirectActivity(this, DisplayBusActivity.class);
+    }
+
+    public void ClickTicket(View view){
+        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    public void ClickAboutUs(View view){
+        redirectActivity(this, ProfileActivity.class);
+    }
+
+    public void ClickLostAndFound(View view){
+
+        if(!isLoggedIn)
+        {
+            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        /*if(!isProfileComplete())
+        {
+            Toast.makeText(this, "Please complete the profile", Toast.LENGTH_SHORT).show();
+            return;
+        }*/
+
         redirectActivity(this, LostFoundMainActivity.class);
+    }
+
+    public boolean isProfileComplete(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        final String userId = firebaseAuth.getCurrentUser().getUid();
+        final String user = firebaseAuth.getCurrentUser().toString();
+        final boolean[] isComplete = {false};
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("/USERS");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Log.i("User Key", userId);
+                    Log.i("Key", postSnapshot.getKey());
+                    if (postSnapshot.getKey().equals(userId)) {
+                        isComplete[0] = true;
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        Log.i("Is profile completed", String.valueOf(isComplete[0]));
+        //Log.i("User is", user);
+        return isComplete[0];
     }
 
     public void ClickLogout(View view){

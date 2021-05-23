@@ -6,12 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".Activities.LostFoundMainActivity">
 
-
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -20,6 +26,12 @@
                 android:background="@color/appBar"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="ClickMenu"
+                    android:src="@drawable/ic_menu" />
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/searchView"
@@ -76,5 +88,16 @@
                 android:backgroundTint="@color/tabTextColor"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@android:color/white">
+
+            <include layout="@layout/main_nav_drawer" />
+
+        </RelativeLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </RelativeLayout>

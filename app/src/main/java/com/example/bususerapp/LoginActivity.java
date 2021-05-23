@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog progressDialog;
     SharedPreferences sharedPreferences;
     private FirebaseAuth firebaseAuth;
-
+    String token;
     private Context context = this;
 
     @Override
@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .getAsJSONObject(new JSONObjectRequestListener() {
                                             @Override
                                             public void onResponse(JSONObject response) {
-                                                Log.i("User registered:", "Yess");
+                                                Log.i("User registered:", response.toString());
                                                 finish();
                                                 // Redirect to login activity
                                                 String key = "1";

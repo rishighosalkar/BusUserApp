@@ -54,7 +54,7 @@ public class LostFoundMainActivity extends AppCompatActivity implements View.OnC
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
 
-        //drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
         // Set drawer
@@ -93,6 +93,39 @@ public class LostFoundMainActivity extends AppCompatActivity implements View.OnC
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public void ClickMenu(View view)
+    {   //open drawer
+        openDrawer(drawerLayout);
+    }
+
+    public void openDrawer(DrawerLayout drawerLayout) {
+        //open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+
+    }
+
+    public void ClickLogo(View view)
+    {
+        closeDrawer(drawerLayout);
+    }
+
+    public void closeDrawer(DrawerLayout drawerLayout) {
+        //close drawer layout
+        //check condition
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            //drawer is open
+            //close drawer
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        closeDrawer(drawerLayout);
     }
 
     @Override

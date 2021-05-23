@@ -106,7 +106,7 @@ public class ProfileViewActivity extends AppCompatActivity implements View.OnCli
                 if (user != null){
                     textViewUser.setText(user.getName());
                     phoneNum = user.getPhoneNum();
-                    textViewSchool.setText(user.getSchool());
+                    textViewSchool.setText(user.getUsername());
                     imageUrl = dataSnapshot.child("IMAGE").child("imageUrl").getValue(String.class);
                     imageName = dataSnapshot.child("IMAGE").child("name").getValue(String.class);
                     Picasso.get().load(imageUrl).resize(300,300).into(imageView);

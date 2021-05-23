@@ -19,11 +19,14 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.example.bususerapp.Classes.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
 
@@ -33,6 +36,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText editTextEmail, editTextUsername, editTextPhone, editTextAddress, editTextPassword, editTextConfirmPassword;
     private Button buttonRegister;
     private FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
+
+    private String userId;
 
     private ProgressDialog progressDialog;
 
@@ -117,14 +123,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     public void onComplete(@NonNull Task<AuthResult> task){
                         progressDialog.dismiss();
                         if (task.isSuccessful()){
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            FirebaseUser currUser = firebaseAuth.getCurrentUser();
+                            userId = currUser.getUid();
+                            currUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
+
                                         // Successfully registered user, please verify through user email
                                         Toast.makeText(context, "Please check email for verification.", Toast.LENGTH_SHORT).show();
-
+                                        progressDialog.setMessage("Redirecting");
+                                        progressDialog.show();
                                         AndroidNetworking.post("https://bestbus-api.herokuapp.com/api/create/")
                                                 .addBodyParameter("email", email)
                                                 .addBodyParameter("username", username)
@@ -137,6 +146,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                                 .getAsJSONObject(new JSONObjectRequestListener() {
                                                     @Override
                                                     public void onResponse(JSONObject response) {
+                                                        Toast.makeText(RegisterActivity.this, "User has been registered", Toast.LENGTH_SHORT).show();
                                                         finish();
                                                         // Redirect to login activity
                                                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));

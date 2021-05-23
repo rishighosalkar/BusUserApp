@@ -2,15 +2,15 @@ package com.example.bususerapp.Classes;
 
 public class User {
 
-    private String name, school, id, email, phoneNum;
+    private String name, username, id, email, phoneNum;
 
     public User(){
 
     }
 
-    public User(String name, String school, String id, String email, String phoneNum) {
+    public User(String name, String username, String id, String email, String phoneNum) {
         this.name = name;
-        this.school = school;
+        this.username = username;
         this.id = id;
         this.email = email;
         this.phoneNum = phoneNum;
@@ -20,8 +20,8 @@ public class User {
         return this.name;
     }
 
-    public String getSchool(){
-        return this.school;
+    public String getUsername(){
+        return this.username;
     }
 
     public String getId(){

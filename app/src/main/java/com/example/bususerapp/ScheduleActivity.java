@@ -3,6 +3,8 @@ package com.example.bususerapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
@@ -33,7 +35,7 @@ public class ScheduleActivity extends AppCompatActivity {
     private ViewPager viewPager;
     RelativeLayout relativeLayout;
     LinearLayout linearLayout;
-
+    DrawerLayout drawerLayout;
 
     private Context context = this;
 
@@ -45,6 +47,7 @@ public class ScheduleActivity extends AppCompatActivity {
         searchView = (SearchView) findViewById(R.id.searchView);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //relativeLayout = (RelativeLayout) findViewById(R.id.parent_layout);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -117,11 +120,55 @@ public class ScheduleActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void ClickMenu(View view)
+    {   //open drawer
+        openDrawer(drawerLayout);
+    }
+
+    public void openDrawer(DrawerLayout drawerLayout) {
+        //open drawer layout
+        drawerLayout.openDrawer(GravityCompat.START);
+
+    }
+
+    public void ClickLogo(View view)
+    {
+        closeDrawer(drawerLayout);
+    }
+
+    public void closeDrawer(DrawerLayout drawerLayout) {
+        //close drawer layout
+        //check condition
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            //drawer is open
+            //close drawer
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
     private void ClickBusStop(AdapterView<?> adapterView, View view, int i, long l) {
         //adapterView.getSelectedItem().toString();
         ListView listView = (ListView)findViewById(R.id.parent_layout);
         Log.i("Clicked on bus stop", String.valueOf(adapterView.getItemAtPosition(i)));
+        Toast.makeText(this, String.valueOf(adapterView.getItemAtPosition(i)), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        closeDrawer(drawerLayout);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
