@@ -61,9 +61,12 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
     SharedPreferences sharedPreferences;
     TextView textView;
     String username;
-    private Double lon,lat;
+
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
+    private int ACCESS_LOCATION_REQUEST_CODE = 10001;
+    private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
+    private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
 
     Marker userLocationMarker;
     Circle userLocationAccuracyCircle;
@@ -82,30 +85,34 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
         Log.i("UserNameeee: ", username);
 
 
-        FirebaseApp secondApp2 = FirebaseApp.getInstance("busdriverapp-258fb");
+        /*FirebaseApp secondApp2 = FirebaseApp.getInstance("busdriverapp-258fb");
         FirebaseDatabase secondDatabase2 = FirebaseDatabase.getInstance(secondApp2);
         databaseReference1 = secondDatabase2.getReference("Location");
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String latitude = snapshot.child(username).child("latitude").getValue().toString();
-                String longitude = snapshot.child(username).child("longitude").getValue().toString();
-                sharedPreferences.edit().putString("Latitude", latitude).apply();
-                sharedPreferences.edit().putString("LongitudeS", longitude).apply();
-                Log.i("Latitude isss::::", snapshot.child(username).child("longitude").getValue().toString());
+                Double latitude = snapshot.child(username).child("latitude").getValue(Double.class);
+                Double longitude = snapshot.child(username).child("longitude").getValue(Double.class);
+                //sharedPreferences.edit().putString("Latitude", latitude).apply();
+                //sharedPreferences.edit().putString("LongitudeS", longitude).apply();
+                if(latitude!=null && longitude!=null) {
+                    Log.i("Latitude isss::::", longitude.toString());
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in Sydney"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         };
 
-        databaseReference1.addValueEventListener(postListener);
+        databaseReference1.addValueEventListener(postListener);*/
         //Log.i("Postsnap", postsnapshot.toString());
 
-
+        /*
         if(sharedPreferences!=null)
         {
             lat = Double.valueOf(sharedPreferences.getString("Latitude", null));
@@ -115,7 +122,7 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
             lon = Double.valueOf(sharedPreferences.getString("LongitudeS", null));
         }
         //Log.i("Latitude", lat.toString());
-
+        */
 
         /*databaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
             Integer i=0;
@@ -139,7 +146,7 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });*/
+        });
 
         //Log.i("LLLLL", lat);
         if(lat != null)
@@ -147,8 +154,8 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
             Log.i("Demoo", lat.toString());
             return;
         }
-        Log.i("Demo", "Dont know why null");
-        getCurrentLocation();
+        Log.i("Demo", "Dont know why null");*/
+        //getCurrentLocation();
         binding = ActivityLiveMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -156,6 +163,7 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     /**
@@ -176,6 +184,34 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
         //zoomToUserLocation();
+        FirebaseApp secondApp2 = FirebaseApp.getInstance("busdriverapp-258fb");
+        FirebaseDatabase secondDatabase2 = FirebaseDatabase.getInstance(secondApp2);
+        databaseReference1 = secondDatabase2.getReference("Location");
+
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Double latitude = snapshot.child(username).child("latitude").getValue(Double.class);
+                Double longitude = snapshot.child(username).child("longitude").getValue(Double.class);
+                //sharedPreferences.edit().putString("Latitude", latitude).apply();
+                //sharedPreferences.edit().putString("LongitudeS", longitude).apply();
+                if(latitude!=null && longitude!=null) {
+                    Log.i("Latitude isss::::", longitude.toString());
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    Location location = new Location("");
+                    location.setLatitude(latitude);
+                    location.setLongitude(longitude);
+                    setUserLocationMarker(location);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        databaseReference1.addValueEventListener(postListener);
+        getCurrentLocation();
 
     }
 
@@ -186,10 +222,15 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
         //location.setLatitude(lat);
         //location.setLongitude(lon);
 
+        //Double lon = 72.9999919,lat = 19.1576469;
         //textView.setText("Latitude");
         databaseReference = secondDatabase.getReference("Location").child(username);
 
+        //LatLng latLng = new LatLng(lat, lon);
+
+
         databaseReference.addChildEventListener(new ChildEventListener() {
+            Double latitude, longitude;
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
             }
@@ -200,25 +241,26 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
 
                 if(dataSnapshot.getKey().equals("latitude"))
                 {
-                    lat = Double.valueOf(dataSnapshot.getValue().toString());
-                    Log.i("Latitude", lat.toString());
+                    latitude = dataSnapshot.getValue(Double.class);
+                    Log.i("Latitude", latitude.toString());
                 }
                 if(dataSnapshot.getKey().equals("longitude")){
-                    lon = Double.valueOf(dataSnapshot.getValue().toString());
-                    Log.i("longitude", lon.toString());
+                    longitude = dataSnapshot.getValue(Double.class);
+                    Log.i("longitude", longitude.toString());
                 }
-                LatLng latLng = new LatLng(lat, lon);
-                //lon = dataSnapshot.ge.toString();
-                //Log.i("Latitude", lat.toString());
-                Log.i("Prev", prevChildKey);
-                Location location = null;
-                location.setLatitude(lat);
-                location.setLongitude(lon);
-                setUserLocationMarker(location);
-                //setUserLocationMarker(location);
-                //LatLng latLng = new LatLng(lat, lon);
+
+                if(latitude != null && longitude!= null)
+                {
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    Location location = new Location("");
+                    location.setLatitude(latitude);
+                    location.setLongitude(longitude);
+                    setUserLocationMarker(location);
+                }
+                //Log.i("Prev", prevChildKey);
                 //mMap.addMarker((new MarkerOptions().position(latLng).title("Current Location")));
-                //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng, 15));
+                //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             }
 
             @Override
@@ -276,5 +318,19 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
 //                mMap.addMarker(new MarkerOptions().position(latLng));
             }
         });
+    }
+
+    private void enableUserLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            //Ask for permission
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                //We need to show user a dialog for displaying why the permission is needed and then ask for the permission...
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
+            } else {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_ACCESS_REQUEST_CODE);
+            }
+        }
     }
 }

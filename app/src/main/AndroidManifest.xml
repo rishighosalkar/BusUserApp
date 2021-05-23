@@ -15,7 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BusUserApp">
-        <activity android:name=".TicketBooking.TicketActivity"></activity>
+        <activity android:name=".Schedule.ScheduleSDActivity"></activity>
+        <activity android:name=".Schedule.ScheduleBusNoActivity" />
+        <activity android:name=".TicketBooking.TicketActivity" />
         <activity android:name=".TicketBooking.RazorPayActivity" />
         <activity android:name=".TicketBooking.TicketBookingMainActivity" />
         <!--

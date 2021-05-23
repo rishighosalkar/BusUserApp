@@ -25,6 +25,7 @@ import com.example.bususerapp.Activities.ProfileViewActivity;
 import com.example.bususerapp.Classes.Post;
 import com.example.bususerapp.Classes.User;
 import com.example.bususerapp.LiveTrack.DisplayBusActivity;
+import com.example.bususerapp.Schedule.ScheduleSDActivity;
 import com.example.bususerapp.TicketBooking.TicketActivity;
 import com.example.bususerapp.TicketBooking.TicketBookingMainActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
             return;
         }
-        redirectActivity(this, ScheduleActivity.class);
+        redirectActivity(this, ScheduleSDActivity.class);
     }
 
     public void ClickLiveLocation(View view){
