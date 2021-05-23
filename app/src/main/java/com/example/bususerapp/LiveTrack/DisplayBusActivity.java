@@ -71,8 +71,8 @@ public class DisplayBusActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     String demo = postSnapshot.getKey().toString() + " " + postSnapshot.child("bus_no").getValue().toString();
                     s[i] = demo;
+                    Log.i("Usersss",s[i]);
                     i++;
-                    Log.i("Usersss", postSnapshot.toString());
                 }
                 ArrayAdapter adapter = new ArrayAdapter<String>(DisplayBusActivity.this, R.layout.activity_listview, s);
 
@@ -94,7 +94,10 @@ public class DisplayBusActivity extends AppCompatActivity {
         String[] s;
         s = String.valueOf(adapterView.getItemAtPosition(i)).split(" ");
         Log.i("Clicked on bus stop", String.valueOf(adapterView.getItemAtPosition(i)));
-        Log.i("String", s[0]);
+        //for(int j=0;j<s.length;j++)
+            //Log.i("String" + String.valueOf(j), s[j]);
+        //Log.i("String", s[0]);
+        //Log.i("String", s[1]);
         Toast.makeText(this, String.valueOf(adapterView.getItemAtPosition(i)), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LiveMapsActivity.class);
         sharedPreferences.edit().putString("username", s[0]).commit();

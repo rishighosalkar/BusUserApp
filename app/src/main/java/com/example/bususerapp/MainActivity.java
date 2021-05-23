@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.style.StrikethroughSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -24,6 +25,8 @@ import com.example.bususerapp.Activities.ProfileViewActivity;
 import com.example.bususerapp.Classes.Post;
 import com.example.bususerapp.Classes.User;
 import com.example.bususerapp.LiveTrack.DisplayBusActivity;
+import com.example.bususerapp.TicketBooking.TicketActivity;
+import com.example.bususerapp.TicketBooking.TicketBookingMainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences sharedPreferences;
     public static String key = "1";
     boolean isLoggedIn = false;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPreferences!= null) {// to avoid the NullPointerException
             isLoggedIn = sharedPreferences.getBoolean(key, false);
+            token = sharedPreferences.getString("Token", null);
         }
         Log.i("", String.valueOf(isLoggedIn));
         if(isLoggedIn)
@@ -127,6 +132,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void ClickTicket(View view){
         Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
+
+        if(!isLoggedIn)
+        {
+            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        sharedPreferences.edit().putString("Token",token).commit();
+        redirectActivity(this, TicketBookingMainActivity.class);
     }
 
     public void ClickAboutUs(View view){

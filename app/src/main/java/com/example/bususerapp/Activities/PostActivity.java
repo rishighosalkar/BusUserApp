@@ -203,7 +203,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         Log.i("User values", userEmail);
         Log.i("Title is ", title);
         Toast.makeText(this, userId, Toast.LENGTH_SHORT).show();
-        // Settiing post information into firebase
+        //Settiing post information into firebase
         databaseReference = FirebaseDatabase.getInstance().getReference("/USERS");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -219,6 +219,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                         databaseReference = FirebaseDatabase.getInstance().getReference("/" + route);
                         databaseReference.child(postUID).child("INFO").setValue(post);
                         uploadFile(postUID);
+                        startActivity(new Intent(getBaseContext(), LostFoundMainActivity.class));
                     }
                     else{
                         Log.i("Error", "No user");

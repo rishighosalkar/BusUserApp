@@ -28,6 +28,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -101,6 +103,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
                             else{
                                 // start main activity
+                                progressDialog.setMessage("Logging Please Wait...");
+                                progressDialog.show();
                                 AndroidNetworking.post("https://bestbus-api.herokuapp.com/api/login/")
                                         .addBodyParameter("email", email)
                                         .addBodyParameter("password", password)
@@ -110,12 +114,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .getAsJSONObject(new JSONObjectRequestListener() {
                                             @Override
                                             public void onResponse(JSONObject response) {
-                                                Log.i("User registered:", response.toString());
+                                                JSONObject jsonObject = null;
+                                                try {
+                                                    jsonObject = response.getJSONObject("token");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                String token = null;
+                                                try {
+                                                    token = jsonObject.getString("token");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                Log.i("User registered:", token);
                                                 finish();
                                                 // Redirect to login activity
                                                 String key = "1";
                                                 Intent i = new Intent(getBaseContext(), MainActivity.class);
                                                 sharedPreferences.edit().putBoolean(key, true).commit();
+                                                sharedPreferences.edit().putString("Token", token).commit();
                                                 //i.putExtra(key, true);
                                                 startActivity(i);
                                                 //startActivity(new Intent(getApplicationContext(), MainActivity.class));
