@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.example.bususerapp.Schedule.ScheduleBusNoActivity;
+import com.example.bususerapp.Schedule.ScheduleSDActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,11 +33,11 @@ import org.json.JSONObject;
 
 public class ScheduleActivity extends AppCompatActivity {
 
-    private SearchView searchView;
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    RelativeLayout relativeLayout;
-    LinearLayout linearLayout;
+    //private SearchView searchView;
+    //private Toolbar toolbar;
+    //private ViewPager viewPager;
+    //RelativeLayout relativeLayout;
+    //LinearLayout linearLayout;
     DrawerLayout drawerLayout;
 
     private Context context = this;
@@ -44,81 +47,13 @@ public class ScheduleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
 
-        searchView = (SearchView) findViewById(R.id.searchView);
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        //searchView = (SearchView) findViewById(R.id.searchView);
+        //toolbar = (Toolbar)findViewById(R.id.toolbar);
+        //viewPager = (ViewPager) findViewById(R.id.viewPager);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         //relativeLayout = (RelativeLayout) findViewById(R.id.parent_layout);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                AndroidNetworking.post("https://bus-xapi.herokuapp.com/api/busno/")
-                        .addBodyParameter("bus_no", query)
-                        .setTag("Bus_no")
-                        .setPriority(Priority.MEDIUM)
-                        .build()
-                        .getAsJSONObject(new JSONObjectRequestListener() {
-                            String bus_no = query;
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                //Log.i("Size", response.toString());
-                                JSONObject li;
-                                try {
-                                    li = response.getJSONObject("Accepted");
-
-                                    JSONArray list = li.getJSONArray(bus_no);
-                                    int len = list.length();
-                                    System.out.println("Length is" + len);
-                                    String s[] = new String[len];
-                                    for(int i=0; i<len; i++)
-                                    {
-                                        JSONArray bus = list.getJSONArray(i);
-                                        String station_name = bus.getString(0);
-                                        s[i] = station_name;
-                                        //Log.i("Bus station name", s[i]);
-                                    }
-
-                                    ArrayAdapter adapter = new ArrayAdapter<String>(ScheduleActivity.this, R.layout.activity_listview, s);
-
-                                    ListView listView = (ListView)findViewById(R.id.parent_layout);
-                                    listView.setAdapter(adapter);
-                                    listView.setOnItemClickListener(ScheduleActivity.this::ClickBusStop);
-
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                                //finish();
-                                // Redirect to login activity
-                                Log.i("result", "successful");
-                                Toast.makeText(ScheduleActivity.this, query, Toast.LENGTH_SHORT).show();
-
-                            }
-                            @Override
-                            public void onError(ANError error) {
-                                Toast.makeText(ScheduleActivity.this,"bus not found",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                // Add the request to the RequestQueue.
-
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (viewPager.getCurrentItem() == 0){
-                    Log.i("Query", newText);
-                }
-                else if (viewPager.getCurrentItem() == 1) {
-                    Log.i("Query", "abc");
-                }
-                return false;
-            }
-        });
     }
 
     public void ClickMenu(View view)
@@ -147,13 +82,20 @@ public class ScheduleActivity extends AppCompatActivity {
         }
     }
 
-    private void ClickBusStop(AdapterView<?> adapterView, View view, int i, long l) {
-        //adapterView.getSelectedItem().toString();
-        ListView listView = (ListView)findViewById(R.id.parent_layout);
-        Log.i("Clicked on bus stop", String.valueOf(adapterView.getItemAtPosition(i)));
-        Toast.makeText(this, String.valueOf(adapterView.getItemAtPosition(i)), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+    public void ClickBusNo(View view){
+        redirectActivity(this, ScheduleBusNoActivity.class);
+    }
+
+    public void ClickSourceDestination(View view){
+        redirectActivity(this, ScheduleSDActivity.class);
+    }
+
+    public static void redirectActivity(Activity activity, Class aClass) {
+        //Initialize intent
+        Intent intent = new Intent(activity, aClass);
+        //set flag
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
     }
 
     @Override

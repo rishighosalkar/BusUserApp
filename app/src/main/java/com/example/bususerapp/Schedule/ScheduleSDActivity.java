@@ -74,12 +74,9 @@ public class ScheduleSDActivity extends AppCompatActivity implements View.OnClic
                                 Log.i("Bus station name", s[i]);
                             }
 
-                            ArrayAdapter adapter = new ArrayAdapter<String>(ScheduleSDActivity.this, R.layout.activity_listview, s);
-
-                            ListView listView = (ListView)findViewById(R.id.parent_layout);
-                            listView.setAdapter(adapter);
-                            listView.setOnItemClickListener(ScheduleSDActivity.this::ClickBusStop);
-
+                            Intent intent = new Intent(ScheduleSDActivity.this, DisplayScheduleActivity.class);
+                            intent.putExtra("Schedule", s);
+                            startActivity(intent);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

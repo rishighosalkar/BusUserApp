@@ -24,7 +24,9 @@ import com.example.bususerapp.Activities.ProfileActivity;
 import com.example.bususerapp.Activities.ProfileViewActivity;
 import com.example.bususerapp.Classes.Post;
 import com.example.bususerapp.Classes.User;
+import com.example.bususerapp.Geofence.GeofenceActivity;
 import com.example.bususerapp.LiveTrack.DisplayBusActivity;
+import com.example.bususerapp.Schedule.ScheduleBusNoActivity;
 import com.example.bususerapp.Schedule.ScheduleSDActivity;
 import com.example.bususerapp.TicketBooking.TicketActivity;
 import com.example.bususerapp.TicketBooking.TicketBookingMainActivity;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setText("Login");
             Toast.makeText(this, "You are logged out", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     public void ClickMenu(View view)
@@ -113,12 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void ClickSchedule(View view)
     {
-        if(!isLoggedIn)
-        {
-            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        redirectActivity(this, ScheduleSDActivity.class);
+        redirectActivity(this, ScheduleActivity.class);
     }
 
     public void ClickLiveLocation(View view){
