@@ -109,10 +109,7 @@ public class MainActivity extends AppCompatActivity {
     public void ClickHome(View view){
         recreate();
     }
-    public void ClickDashboard(View view){
-        if(textView.getText() == "Login")
-            redirectActivity(this, LoginActivity.class);
-    }
+
 
     public void ClickSchedule(View view)
     {
@@ -141,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         redirectActivity(this, TicketBookingMainActivity.class);
     }
 
-    public void ClickAboutUs(View view){
+    public void ClickProfile(View view){
         redirectActivity(this, ProfileActivity.class);
     }
 

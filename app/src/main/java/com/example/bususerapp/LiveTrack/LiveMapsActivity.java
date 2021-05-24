@@ -216,6 +216,7 @@ public class LiveMapsActivity extends FragmentActivity implements OnMapReadyCall
                     location.setLongitude(longitude);
                     setUserLocationMarker(location);
                     addPolygon(latLng);
+                    checkRoute(latLng);
                 }
                 //Log.i("Prev", prevChildKey);
                 //mMap.addMarker((new MarkerOptions().position(latLng).title("Current Location")));
